@@ -1,10 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Welcome to the website</title>
+    <title>Все портфолио</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
-<body>
 
+<body>
+    <div class="all-portfolio-container">
+        <h1 class="all-title">Все портфолио</h1>
+
+        <div class="grid">
+            {% for portfolio in data %}
+                <div class="card">
+                    <img src="/static/{{portfolio[6]}}" alt="1">
+                    <a href="#">{{portfolio[2]}}</a>
+                    <p class="bio-preview">{{portfolio[3]}}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+    <div style="text-align: center; margin-top: 40px;">
+        <a href="" class="button-secondary">Создать новое портфолио</a>
+    </div>
 </body>
 </html>
