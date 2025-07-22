@@ -14,7 +14,7 @@
         <div class="grid">
             {% for portfolio in data %}
                 <div class="card">
-                    <img src="/static/{{portfolio[6]}}" alt="1">
+                    <img src="{{url_for('static', filename=portfolio[6] if portfolio[6] else 'placeholder.png')}}" alt="1">
                     <a href="#">{{portfolio[2]}}</a>
                     <p class="bio-preview">{{portfolio[3]}}</p>
                 </div>

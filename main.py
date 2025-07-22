@@ -4,6 +4,17 @@ import sqlite3
 
 app = Flask(__name__)
 
+
+"""
+0: user id
+1: uuid
+2: name
+3: bio
+4: github
+5: telegram
+6: image
+7: skills
+"""
 @app.route("/")
 def homepage():
     connection = sqlite3.connect("data.db")
