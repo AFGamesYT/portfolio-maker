@@ -31,14 +31,22 @@
         {% endfor %}
       </ul>
 
-      <h2>Инструменты</h2>
-      <ul>
-        <li class="badge">📄 HTML</li>
-        <li class="badge">🎨 CSS</li>
-        <li class="badge">🐍 Python</li>
-        <li class="badge">🔧 Git</li>
-        <li class="badge">🐙 GitHub</li>
-      </ul>
+      {% set matched_tools = [] %}
+      {% for tool in tool_icons %}
+        {% if tool in skills %}
+          {% set _ = matched_tools.append(tool) %}
+        {% endif %}
+      {% endfor %}
+      {% if matched_tools|length > 0 %}
+        <h2>Инструменты</h2>
+        <ul>
+          {% for tool in tool_icons %}
+            {% if tool in skills %}
+              <li class="badge">{{tool_icons[tool]}} {{tool}}</li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {% endif %}
 
 
       {% if gh_repos %}

@@ -71,16 +71,17 @@ def create_portfolio():
                     errors.append("This GitHub username does not exist. Please write the link to it, or the GitHub username directly.")
 
             telegram = data['telegram'].strip().replace("https://", "")
-            telegram_username = telegram.replace("t.me/", "").replace("/", "")
 
-            try:
-                tg_check = requests.get(f"https://t.me/{telegram_username}")
-                if tg_check.status_code != 200 or "If you have Telegram, you can contact" not in tg_check.text:
+            if telegram:
+                telegram_username = telegram.replace("t.me/", "").replace("/", "")
+                try:
+                    tg_check = requests.get(f"https://t.me/{telegram_username}")
+                    if tg_check.status_code != 200 or "If you have Telegram, you can contact" not in tg_check.text:
+                        error = True
+                        errors.append("This Telegram username does not exist.")
+                except Exception:
                     error = True
-                    errors.append("This Telegram username does not exist.")
-            except Exception:
-                error = True
-                errors.append("Could not verify Telegram username. Please try again later.")
+                    errors.append("Could not verify Telegram username. Please try again later.")
 
 
             uid = str(uuid.uuid4())
@@ -134,6 +135,13 @@ def view_portfolio(user_uuid):
 
     skills = str(data[7]).split(", ")
 
+    tool_icons = {
+        "Python": "🐍", "Flask": "🌶", "HTML": "📄", "CSS": "🎨",
+        "HTML/CSS": "🖌️", "Git": "🔧", "GitHub": "🐙", "Telegram": "✈️",
+        "Телеграм": "✈️", "SQL": "🗄️", "SQLite": "📘", "JavaScript": "⚡",
+        "JS": "⚡", "Jinja": "🧩", "PyGame": "🎮", "Pygame": "🎮", "Java": "☕"
+    }
+
     gh_repos = []
 
     gh_username = data[4]
@@ -162,7 +170,7 @@ def view_portfolio(user_uuid):
         "gh_repos": gh_repos
     }
 
-    return render_template("portfolio_template.html", **data_dict)
+    return render_template("portfolio_template.html", **data_dict, tool_icons=tool_icons)
 
 if __name__ == "__main__":
     app.run()
