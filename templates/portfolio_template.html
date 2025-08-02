@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>{{name}} | Портфолио</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Левая часть -->
+    <div class="profile">
+      <img src="/static/{{avatar}}" alt="Аватар" class="avatar">
+      <h1>{{name}}</h1>
+      <p>{{bio}}</p>
+      <div style="margin-top: 10px;">
+        {% if telegram %}
+          <a href="{{telegram}}" target="_blank" title="Открыть Telegram">
+            <span class="badge">✈️ Telegram</span>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Правая часть -->
+    <div class="info">
+      <h2>Навыки</h2>
+      <ul class="skills">
+        {% for skill in skills %}
+          <li>{{skill}}</li>
+        {% endfor %}
+      </ul>
+
+      <h2>Инструменты</h2>
+      <ul>
+        <li class="badge">📄 HTML</li>
+        <li class="badge">🎨 CSS</li>
+        <li class="badge">🐍 Python</li>
+        <li class="badge">🔧 Git</li>
+        <li class="badge">🐙 GitHub</li>
+      </ul>
+
+
+      {% if gh_repos %}
+      <h2>Проекты</h2>
+      <div class="projects">
+        {% for project in gh_repos %}
+          <div class="project-box">
+            <h3>{{project["name"]}}</h3>
+            {% if project["description"] %}
+              <p>{{project["description"]}}</p>
+            {% else %}
+              <p>This project has no description.</p>
+            {% endif %}
+            <a href="{{project['link']}}" target="_blank">Перейти →</a>
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

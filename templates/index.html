@@ -15,7 +15,7 @@
             {% for portfolio in data %}
                 <div class="card">
                     <img src="{{url_for('static', filename=portfolio[6] if portfolio[6] else 'placeholder.png')}}" alt="1">
-                    <a href="#">{{portfolio[2]}}</a>
+                    <a href="{{ url_for('view_portfolio', user_uuid=portfolio[1]) }}" target="_blank">{{ portfolio[2] }}</a>
                     <p class="bio-preview">{{portfolio[3]}}</p>
                 </div>
             {% endfor %}
@@ -24,7 +24,7 @@
     </div>
 
     <div style="text-align: center; margin-top: 40px;">
-        <a href="" class="button-secondary">Создать новое портфолио</a>
+        <a href="/create/" class="button-secondary">Создать новое портфолио</a>
     </div>
 </body>
 </html>
