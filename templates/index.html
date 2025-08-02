@@ -8,6 +8,18 @@
 </head>
 
 <body>
+    <form method="GET" style="max-width: 80%;">
+        <select class="form-select"
+                name="skill"
+                onchange="this.form.submit()">
+            <option value="">- Все навыки -</option>
+            {% for tech in tool_icons %}
+                <option value="{{ tech }}"
+                {% if tech.lower() == current_skill %}selected{% endif %}>
+                {{ tech }}</option>
+            {% endfor %}
+        </select>
+    </form>
     <div class="all-portfolio-container">
         <h1 class="all-title">Все портфолио</h1>
 
@@ -17,6 +29,14 @@
                     <img src="{{url_for('static', filename=portfolio[6] if portfolio[6] else 'placeholder.png')}}" alt="1">
                     <a href="{{ url_for('view_portfolio', user_uuid=portfolio[1]) }}" target="_blank">{{ portfolio[2] }}</a>
                     <p class="bio-preview">{{portfolio[3]}}</p>
+
+                    <div class="tool-list">
+                        {% for tech, icon in tool_icons.items() %}
+                            {% if tech in portfolio[7] %}
+                                <span class="badge">{{icon}} {{tech}}</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
             {% endfor %}
         </div>

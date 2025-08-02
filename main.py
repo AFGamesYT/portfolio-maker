@@ -19,16 +19,40 @@ app = Flask(__name__)
 7: skills
 """
 
+tool_icons = {
+        "Python": "🐍", "Flask": "🌶", "HTML": "📄", "CSS": "🎨",
+        "HTML/CSS": "🖌️", "Git": "🔧", "GitHub": "🐙", "Telegram": "✈️",
+        "Телеграм": "✈️", "SQL": "🗄️", "SQLite": "📘", "JavaScript": "⚡",
+        "JS": "⚡", "Jinja": "🧩", "PyGame": "🎮", "Pygame": "🎮", "Java": "☕"
+    }
+
 @app.route("/")
 def homepage():
+    global tool_icons
     connection = sqlite3.connect("data.db")
     cursor = connection.cursor()
 
     data = cursor.execute("SELECT * FROM portfolio").fetchall()
 
-    connection.commit()
     connection.close()
-    return render_template("index.html", data=data)
+
+    portfolios = []
+    filter_skill = request.args.get('skill')
+    if filter_skill:
+        filter_skill = filter_skill.lower().strip()
+    else:
+        portfolios = data
+    
+    for id, uuid, name, bio, github, telegram, avatar, skills_str in data:
+        skills = [s.strip() for s in skills_str.split(",") if s.strip()]
+
+        skills_lower = [s.lower() for s in skills]
+
+        if filter_skill is None or filter_skill in skills_lower:
+            portfolios.append((id, uuid, name, bio, github, telegram, avatar, skills))
+        
+
+    return render_template("index.html", data=portfolios, tool_icons=tool_icons, current_skill=filter_skill or '')
 
 @app.route("/create/", methods=["GET", "POST"])
 def create_portfolio():
@@ -126,6 +150,7 @@ def create_portfolio():
 
 @app.route('/portfolio/<user_uuid>')
 def view_portfolio(user_uuid):
+    global tool_icons
     connection = sqlite3.connect("data.db")
     cursor = connection.cursor()
 
@@ -134,13 +159,6 @@ def view_portfolio(user_uuid):
         return "404: This portfolio doesn't exist.", 404
 
     skills = str(data[7]).split(", ")
-
-    tool_icons = {
-        "Python": "🐍", "Flask": "🌶", "HTML": "📄", "CSS": "🎨",
-        "HTML/CSS": "🖌️", "Git": "🔧", "GitHub": "🐙", "Telegram": "✈️",
-        "Телеграм": "✈️", "SQL": "🗄️", "SQLite": "📘", "JavaScript": "⚡",
-        "JS": "⚡", "Jinja": "🧩", "PyGame": "🎮", "Pygame": "🎮", "Java": "☕"
-    }
 
     gh_repos = []
 
