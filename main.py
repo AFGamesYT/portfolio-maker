@@ -8,7 +8,6 @@ import sqlite3
 
 app = Flask(__name__)
 
-
 """
 0: user id
 1: uuid
@@ -19,6 +18,7 @@ app = Flask(__name__)
 6: image
 7: skills
 """
+
 @app.route("/")
 def homepage():
     connection = sqlite3.connect("data.db")
@@ -52,8 +52,6 @@ def create_portfolio():
                 existing_names.append(existing_portfolio[2])
                 existing_uuids.append(existing_portfolio[1])
 
-            print(f"Existing Names: {existing_names}, Existing Uuids: {existing_uuids}")
-
             data = request.form
 
             username = data['username']
@@ -66,12 +64,23 @@ def create_portfolio():
             skills = data['skills']
             github_username = data['github_username'].strip().replace("https://github.com/", '').replace('/', '')
 
-            check_req = requests.get(f"https://api.github.com/users/{github_username}/repos")
-            if check_req.status_code == 404:
-                error = True
-                errors.append("This GitHub username does not exist. Please write the link to it, or the GitHub username directly.")
+            if github_username:
+                check_req = requests.get(f"https://api.github.com/users/{github_username}/repos")
+                if check_req.status_code == 404:
+                    error = True
+                    errors.append("This GitHub username does not exist. Please write the link to it, or the GitHub username directly.")
 
-            telegram = data['telegram']
+            telegram = data['telegram'].strip().replace("https://", "")
+            telegram_username = telegram.replace("t.me/", "").replace("/", "")
+
+            try:
+                tg_check = requests.get(f"https://t.me/{telegram_username}")
+                if tg_check.status_code != 200 or "If you have Telegram, you can contact" not in tg_check.text:
+                    error = True
+                    errors.append("This Telegram username does not exist.")
+            except Exception:
+                error = True
+                errors.append("Could not verify Telegram username. Please try again later.")
 
 
             uid = str(uuid.uuid4())
@@ -106,10 +115,12 @@ def create_portfolio():
             return redirect(url_for("homepage"))
 
 
-        except Exception:
+        except Exception as e:
             error = True
-            errors.append("Something went wrong. Please try again later.")
+            errors.append("Something went wrong. Please try again later. Error: "+str(e))
             print(errors)
+        
+        return redirect(url_for('homepage'))
 
 
 @app.route('/portfolio/<user_uuid>')
